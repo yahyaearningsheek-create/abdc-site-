@@ -10,6 +10,7 @@ const Identity = () => {
   const { siteData } = useStore();
   const [showMembers, setShowMembers] = useState(false);
   const [showPresidents, setShowPresidents] = useState(false);
+  const [selectedPresidentImage, setSelectedPresidentImage] = useState<string | null>(null);
 
   const cards = [
     {
@@ -151,7 +152,10 @@ const Identity = () => {
                             {president.period}
                           </span>
                           <div className="flex items-center gap-4 mt-3">
-                            <div className="w-14 h-14 rounded-full bg-gray-200 dark:bg-gray-700 overflow-hidden border-2 border-white shadow-sm flex items-center justify-center">
+                            <div 
+                              className="w-14 h-14 rounded-full bg-gray-200 dark:bg-gray-700 overflow-hidden border-2 border-white shadow-sm flex items-center justify-center cursor-pointer hover:scale-110 transition-transform"
+                              onClick={() => president.image && setSelectedPresidentImage(president.image)}
+                            >
                               {president.image ? (
                                 <img src={president.image} alt={president.name} className="w-full h-full object-cover" />
                               ) : (
@@ -169,6 +173,36 @@ const Identity = () => {
                   </div>
                 </div>
               </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Fullscreen President Image */}
+        <AnimatePresence>
+          {selectedPresidentImage && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 z-[200] bg-black/90 flex items-center justify-center p-4 cursor-pointer"
+              onClick={() => setSelectedPresidentImage(null)}
+            >
+              <button
+                onClick={() => setSelectedPresidentImage(null)}
+                className="absolute top-6 right-6 bg-white/10 hover:bg-white/20 p-3 rounded-full text-white transition-colors z-10"
+              >
+                <X className="w-6 h-6" />
+              </button>
+              <motion.img
+                initial={{ scale: 0.9, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.9, opacity: 0 }}
+                transition={{ type: "spring", stiffness: 300, damping: 25 }}
+                src={selectedPresidentImage}
+                alt="Président en grand"
+                className="max-w-[95vw] max-h-[90vh] object-contain rounded-lg shadow-2xl"
+                onClick={(e) => e.stopPropagation()}
+              />
             </motion.div>
           )}
         </AnimatePresence>

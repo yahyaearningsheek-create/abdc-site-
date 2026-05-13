@@ -126,15 +126,17 @@ const Gallery3D = () => {
               </div>
               <div className="flex items-center gap-2">
                 {/* Import button */}
-                <button
-                  onClick={() => fileInputRef.current?.click()}
-                  className="flex items-center gap-2 bg-white/10 hover:bg-white/20 px-4 py-2 rounded-full text-white text-sm font-medium transition-colors"
-                >
-                  <Upload className="w-4 h-4" />
-                  Importer
-                </button>
+                {isAdminMode && (
+                  <button
+                    onClick={() => fileInputRef.current?.click()}
+                    className="flex items-center gap-2 bg-white/10 hover:bg-white/20 px-4 py-2 rounded-full text-white text-sm font-medium transition-colors"
+                  >
+                    <Upload className="w-4 h-4" />
+                    Importer
+                  </button>
+                )}
                 {/* Delete extra image */}
-                {currentIndex >= defaultImages.length && (
+                {isAdminMode && currentIndex >= defaultImages.length && (
                   <button
                     onClick={() => removeExtraImage(currentIndex)}
                     className="flex items-center gap-2 bg-red-500/30 hover:bg-red-500/50 px-4 py-2 rounded-full text-white text-sm font-medium transition-colors"
