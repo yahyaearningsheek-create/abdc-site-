@@ -275,10 +275,13 @@ export function initFirebaseSync() {
   
   // Initialize Firebase with default data if empty
   const defaultFirebaseData: SiteDataFirebase = {
+    heroTitle: store.siteData.heroTitle,
+    heroSubtitle: store.siteData.heroSubtitle,
     members: store.siteData.members,
     presidents: store.siteData.presidents,
     customTexts: store.siteData.customTexts,
     galleryImages: store.siteData.galleryImages || [],
+    photos: store.siteData.photos || [],
     password: 'abdc2025',
   };
   
@@ -290,6 +293,8 @@ export function initFirebaseSync() {
       firebaseReady: true,
       siteData: {
         ...state.siteData,
+        heroTitle: data.heroTitle || state.siteData.heroTitle,
+        heroSubtitle: data.heroSubtitle || state.siteData.heroSubtitle,
         members: data.members || state.siteData.members,
         presidents: data.presidents || state.siteData.presidents,
         customTexts: data.customTexts || state.siteData.customTexts,

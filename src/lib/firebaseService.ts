@@ -21,6 +21,8 @@ export interface FirebasePresident {
 }
 
 export interface SiteDataFirebase {
+  heroTitle: { fr: string; en: string; ar: string };
+  heroSubtitle: { fr: string; en: string; ar: string };
   members: FirebaseMember[];
   presidents: FirebasePresident[];
   customTexts: Record<string, string>;
