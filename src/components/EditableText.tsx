@@ -221,5 +221,5 @@ function generateEditKey(el: HTMLElement): string {
     current = current.parentElement;
     depth++;
   }
-  return "global-" + parts.join(">");
+  return "global-" + parts.join(">").replace(/\./g, "_");
 }

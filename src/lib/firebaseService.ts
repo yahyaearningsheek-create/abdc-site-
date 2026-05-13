@@ -1,7 +1,7 @@
 import { db } from './firebase';
 import {
   doc, getDoc, setDoc, updateDoc,
-  onSnapshot
+  onSnapshot, FieldPath
 } from 'firebase/firestore';
 
 const SITE_DOC = 'site/data';
@@ -60,9 +60,8 @@ export function onSiteDataChange(callback: (data: SiteDataFirebase) => void) {
 // ============ UPDATE CUSTOM TEXTS ============
 export async function updateCustomText(key: string, value: string): Promise<void> {
   const docRef = doc(db, 'site', 'data');
-  await updateDoc(docRef, {
-    [`customTexts.${key}`]: value
-  });
+  // Use FieldPath to handle keys that might contain dots (like CSS classes in generated keys)
+  await updateDoc(docRef, new FieldPath('customTexts', key), value);
 }
 
 // ============ MEMBERS ============
