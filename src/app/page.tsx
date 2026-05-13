@@ -15,6 +15,7 @@ import Governance from "@/components/sections/Governance";
 import Perspectives from "@/components/sections/Perspectives";
 import Contact from "@/components/sections/Contact";
 import AdminToolbar from "@/components/AdminToolbar";
+import Gallery3D from "@/components/Gallery3D";
 import { GlobalEditableProvider } from "@/components/EditableText";
 import { initFirebaseSync } from "@/store/useStore";
 
@@ -39,6 +40,7 @@ export default function Home() {
         <Governance />
         <Perspectives />
         <Contact />
+        <Gallery3D />
       </main>
       <Footer />
       <AdminToolbar />
