@@ -25,6 +25,7 @@ const EditableText = ({ id, defaultValue, tag: Tag = "span", className = "", mul
   const [isEditing, setIsEditing] = useState(false);
   const [tempValue, setTempValue] = useState(displayValue);
   const [isSaving, setIsSaving] = useState(false);
+  const [isSaved, setIsSaved] = useState(false);
   const inputRef = useRef<HTMLInputElement | HTMLTextAreaElement>(null);
 
   useEffect(() => {
@@ -47,7 +48,12 @@ const EditableText = ({ id, defaultValue, tag: Tag = "span", className = "", mul
     setIsSaving(true);
     try {
       await setCustomText(storageKey, tempValue);
-      setIsEditing(false);
+      setIsSaved(true);
+      // Wait a bit to show success state
+      setTimeout(() => {
+        setIsEditing(false);
+        setIsSaved(false);
+      }, 1000);
     } catch (error) {
       console.error("Failed to save text:", error);
     } finally {
@@ -98,12 +104,14 @@ const EditableText = ({ id, defaultValue, tag: Tag = "span", className = "", mul
         <div className="absolute -top-3 -right-2 flex gap-1">
           <button
             onClick={handleSave}
-            disabled={isSaving}
-            className="bg-green-500 text-white p-1.5 rounded-full shadow-lg hover:bg-green-600 transition-colors disabled:opacity-50"
+            disabled={isSaving || isSaved}
+            className={`p-1.5 rounded-full shadow-lg transition-all duration-300 ${
+              isSaved ? "bg-green-600 scale-110" : "bg-green-500 hover:bg-green-600"
+            } text-white disabled:opacity-50`}
           >
             {isSaving ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Check className="w-3.5 h-3.5" />}
           </button>
-          {!isSaving && (
+          {!isSaving && !isSaved && (
             <button
               onClick={() => setIsEditing(false)}
               className="bg-red-500 text-white p-1.5 rounded-full shadow-lg hover:bg-red-600 transition-colors"
