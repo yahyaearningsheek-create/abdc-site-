@@ -49,7 +49,7 @@ interface AppState {
   firebaseReady: boolean;
   setFirebaseReady: (ready: boolean) => void;
   updateSiteData: (data: Partial<SiteData>) => void;
-  setCustomText: (key: string, value: string) => void;
+  setCustomText: (key: string, value: string) => Promise<void>;
   getCustomText: (key: string, fallback: string) => string;
   addMember: (member: Member) => void;
   removeMember: (id: string) => void;
@@ -166,15 +166,21 @@ export const useStore = create<AppState>()(
         set((state) => ({
           siteData: { ...state.siteData, ...data },
         })),
-      setCustomText: (key, value) => {
+      setCustomText: async (key, value) => {
+        // Optimistic update
         set((state) => ({
           siteData: {
             ...state.siteData,
             customTexts: { ...(state.siteData.customTexts || {}), [key]: value },
           },
         }));
-        // Sync to Firebase
-        updateCustomText(key, value).catch(console.error);
+        // Persist to Firebase
+        try {
+          await updateCustomText(key, value);
+        } catch (error) {
+          console.error("Firebase update failed:", error);
+          // Optional: revert state if needed
+        }
       },
       getCustomText: (key, fallback) => {
         const custom = (get().siteData?.customTexts || {})[key];
@@ -199,7 +205,6 @@ export const useStore = create<AppState>()(
         removeMemberFB(id).catch(console.error);
       },
       addPresident: async (president) => {
-        // Image stored as base64 directly in Firestore (no Storage needed)
         set((state) => ({
           siteData: {
             ...state.siteData,
@@ -219,7 +224,6 @@ export const useStore = create<AppState>()(
       },
       addGalleryImg: async (base64) => {
         try {
-          // Store base64 directly in Firestore (no Storage needed)
           await addGalleryImage(base64);
           set((state) => ({
             siteData: {
@@ -273,7 +277,6 @@ export const useStore = create<AppState>()(
 export function initFirebaseSync() {
   const store = useStore.getState();
   
-  // Initialize Firebase with default data if empty
   const defaultFirebaseData: SiteDataFirebase = {
     heroTitle: store.siteData.heroTitle,
     heroSubtitle: store.siteData.heroSubtitle,
@@ -287,8 +290,8 @@ export function initFirebaseSync() {
   
   initSiteData(defaultFirebaseData).catch(console.error);
 
-  // Listen for realtime changes from Firebase
   const unsubscribe = onSiteDataChange((data) => {
+    // Only update if not currently editing to avoid jumping cursor or overwriting local edits
     useStore.setState((state) => ({
       firebaseReady: true,
       siteData: {

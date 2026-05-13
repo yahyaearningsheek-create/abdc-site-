@@ -68,8 +68,8 @@ const Perspectives = () => {
                 <div className="w-14 h-14 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
                   {p.icon}
                 </div>
-                <h3 className="text-xl font-bold mb-2">{p.title}</h3>
-                <p className="text-white/80 text-sm">{p.desc}</p>
+                <EditableText id={`persp-title-${idx}`} defaultValue={p.title} tag="h3" className="text-xl font-bold mb-2" />
+                <EditableText id={`persp-desc-${idx}`} defaultValue={p.desc} tag="p" className="text-white/80 text-sm" />
               </div>
               <div className="absolute top-4 right-4 w-24 h-24 rounded-full bg-white/10 blur-2xl group-hover:scale-150 transition-transform" />
             </motion.div>

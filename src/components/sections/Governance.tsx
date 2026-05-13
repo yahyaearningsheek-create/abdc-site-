@@ -62,15 +62,13 @@ const Governance = () => {
                       : "bg-gray-50 dark:bg-gray-800/50"
                   }`}
                 >
-                  <span className="text-sm font-medium text-text dark:text-gray-300">{item.label}</span>
-                  <span className={`font-bold text-sm ${
+                  <EditableText id={`gov-budget-label-${idx}`} defaultValue={item.label} tag="span" className="text-sm font-medium text-text dark:text-gray-300" />
+                  <EditableText id={`gov-budget-val-${idx}`} defaultValue={item.value} tag="span" className={`font-bold text-sm ${
                     item.type === "income" ? "text-green-600 dark:text-green-400" :
                     item.type === "balance" ? "text-blue-600 dark:text-blue-400" :
                     item.type === "total" ? "text-red-600 dark:text-red-400" :
                     "text-gray-600 dark:text-gray-400"
-                  }`}>
-                    {item.value}
-                  </span>
+                  }`} />
                 </div>
               ))}
             </div>
@@ -100,12 +98,10 @@ const Governance = () => {
                 >
                   <div className="text-secondary flex-shrink-0">{item.icon}</div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-text dark:text-gray-300 truncate">{item.label}</p>
-                    {item.note && <p className="text-xs text-gray-500 dark:text-gray-500">{item.note}</p>}
+                    <EditableText id={`gov-entreaide-label-${idx}`} defaultValue={item.label} tag="p" className="text-sm font-medium text-text dark:text-gray-300 truncate" />
+                    {item.note && <EditableText id={`gov-entreaide-note-${idx}`} defaultValue={item.note} tag="p" className="text-xs text-gray-500 dark:text-gray-500" />}
                   </div>
-                  <span className="font-bold text-sm text-secondary dark:text-secondary-light whitespace-nowrap">
-                    {item.value}
-                  </span>
+                  <EditableText id={`gov-entreaide-val-${idx}`} defaultValue={item.value} tag="span" className="font-bold text-sm text-secondary dark:text-secondary-light whitespace-nowrap" />
                 </div>
               ))}
             </div>

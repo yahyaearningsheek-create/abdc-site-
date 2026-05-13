@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import { Users, ChevronRight } from "lucide-react";
 import { useStore } from "@/store/useStore";
+import EditableText from "@/components/EditableText";
 
 const Hero = () => {
   const { siteData, language } = useStore();
@@ -88,7 +89,9 @@ const Hero = () => {
             transition={{ duration: 0.5, delay: 0.3 }}
             className="text-4xl md:text-6xl font-extrabold text-white leading-tight mb-6 drop-shadow-lg"
           >
-            {siteData.heroTitle[language]}
+            <EditableText id={`hero-title-${language}`}>
+              {siteData.heroTitle[language]}
+            </EditableText>
           </motion.h1>
 
           {/* Subtitle */}
@@ -98,7 +101,9 @@ const Hero = () => {
             transition={{ duration: 0.5, delay: 0.4 }}
             className="text-xl md:text-2xl text-white/90 font-semibold mb-6"
           >
-            {siteData.heroSubtitle[language]}
+            <EditableText id={`hero-subtitle-${language}`}>
+              {siteData.heroSubtitle[language]}
+            </EditableText>
           </motion.h2>
 
           {/* Tagline */}

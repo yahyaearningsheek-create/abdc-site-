@@ -43,11 +43,8 @@ const Partners = () => {
               <Globe className="w-7 h-7 text-blue-600 dark:text-blue-400" />
             </div>
             <div>
-              <h3 className="text-xl font-bold text-text dark:text-white mb-3">Programme PMF/FEM – 8ème Phase (2025-2028)</h3>
-              <p className="text-gray-600 dark:text-gray-400 leading-relaxed">
-                Dans le cadre de la 8ème phase opérationnelle du PMF/FEM (2025-2028), l'ABDC a été sélectionnée par le PNUD 
-                pour renforcer les capacités des organisations de la société civile.
-              </p>
+                <EditableText id="partners-pnud-title" defaultValue="Programme PMF/FEM – 8ème Phase (2025-2028)" tag="h3" className="text-xl font-bold text-text dark:text-white mb-3" />
+                <EditableText id="partners-pnud-desc" defaultValue="Dans le cadre de la 8ème phase opérationnelle du PMF/FEM (2025-2028), l'ABDC a été sélectionnée par le PNUD pour renforcer les capacités des organisations de la société civile." tag="p" className="text-gray-600 dark:text-gray-400 leading-relaxed" multiline />
             </div>
           </div>
         </motion.div>
@@ -99,7 +96,7 @@ const Partners = () => {
             className="flex items-center gap-3 bg-primary/10 dark:bg-primary/20 px-6 py-3 rounded-full"
           >
             <Users className="w-5 h-5 text-primary" />
-            <span className="font-bold text-primary dark:text-primary-light">99 associations formées</span>
+            <EditableText id="partners-total-assoc" defaultValue="99 associations formées" tag="span" className="font-bold text-primary dark:text-primary-light" />
           </motion.div>
           <motion.div
             initial={{ opacity: 0 }}
@@ -108,7 +105,7 @@ const Partners = () => {
             className="flex items-center gap-3 bg-accent/10 dark:bg-accent/20 px-6 py-3 rounded-full"
           >
             <FileCheck className="w-5 h-5 text-accent" />
-            <span className="font-bold text-accent dark:text-accent-light">57 projets retenus</span>
+            <EditableText id="partners-total-projects" defaultValue="57 projets retenus" tag="span" className="font-bold text-accent dark:text-accent-light" />
           </motion.div>
         </div>
       </div>
