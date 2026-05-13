@@ -11,19 +11,18 @@ const defaultImages = Array.from({ length: 49 }, (_, i) => ({
 }));
 
 const Gallery3D = () => {
-  const { isAdminMode } = useStore();
+  const { isAdminMode, siteData, addGalleryImg, removeGalleryImg } = useStore();
   const [isOpen, setIsOpen] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [fullscreen, setFullscreen] = useState(false);
-  const [extraImages, setExtraImages] = useState<{ src: string; label: string }[]>(() => {
-    try {
-      const saved = localStorage.getItem("abdc-gallery-extra");
-      return saved ? JSON.parse(saved) : [];
-    } catch { return []; }
-  });
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const allImages = [...defaultImages, ...extraImages];
+  const firebaseImages = (siteData.galleryImages || []).map((src, i) => ({
+    src,
+    label: `Image ajoutée ${i + 1}`,
+  }));
+
+  const allImages = [...defaultImages, ...firebaseImages];
 
   const goNext = () => setCurrentIndex((prev) => (prev + 1) % allImages.length);
   const goPrev = () => setCurrentIndex((prev) => (prev - 1 + allImages.length) % allImages.length);
@@ -43,12 +42,7 @@ const Gallery3D = () => {
       const reader = new FileReader();
       reader.onload = (ev) => {
         const src = ev.target?.result as string;
-        const newImg = { src, label: file.name.replace(/\.[^.]+$/, "") };
-        setExtraImages((prev) => {
-          const updated = [...prev, newImg];
-          localStorage.setItem("abdc-gallery-extra", JSON.stringify(updated));
-          return updated;
-        });
+        addGalleryImg(src);
       };
       reader.readAsDataURL(file);
     });
@@ -56,13 +50,9 @@ const Gallery3D = () => {
   };
 
   const removeExtraImage = (idx: number) => {
-    const extraIdx = idx - defaultImages.length;
-    if (extraIdx < 0) return;
-    setExtraImages((prev) => {
-      const updated = prev.filter((_, i) => i !== extraIdx);
-      localStorage.setItem("abdc-gallery-extra", JSON.stringify(updated));
-      return updated;
-    });
+    const imgUrl = allImages[idx]?.src;
+    if (!imgUrl || idx < defaultImages.length) return;
+    removeGalleryImg(imgUrl);
     if (currentIndex >= allImages.length - 1) setCurrentIndex(Math.max(0, allImages.length - 2));
   };
 
@@ -93,7 +83,7 @@ const Gallery3D = () => {
           className="flex items-center gap-3 bg-gradient-to-r from-primary to-secondary text-white px-8 py-4 rounded-full shadow-xl hover:shadow-2xl transition-all font-bold text-lg"
         >
           <Images className="w-6 h-6" />
-          Galerie 3D ({allImages.length} images)
+          Voir les Archives (Document)
         </motion.button>
       </div>
 

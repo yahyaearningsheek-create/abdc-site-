@@ -24,7 +24,8 @@ export interface SiteDataFirebase {
   members: FirebaseMember[];
   presidents: FirebasePresident[];
   customTexts: Record<string, string>;
-  galleryImages: string[]; // base64 strings stored directly in Firestore
+  galleryImages: string[];
+  photos: { id: string; src: string; title: string; category: string }[];
   password: string;
 }
 
@@ -117,6 +118,26 @@ export async function removeGalleryImage(base64: string): Promise<void> {
   if (snap.exists()) {
     const data = snap.data() as SiteDataFirebase;
     await updateDoc(docRef, { galleryImages: (data.galleryImages || []).filter(img => img !== base64) });
+  }
+}
+
+// ============ PHOTOS (Organized) ============
+export async function addPhotoFB(photo: { id: string; src: string; title: string; category: string }): Promise<void> {
+  const docRef = doc(db, 'site', 'data');
+  const snap = await getDoc(docRef);
+  if (snap.exists()) {
+    const data = snap.data() as SiteDataFirebase;
+    const photos = data.photos || [];
+    await updateDoc(docRef, { photos: [...photos, photo] });
+  }
+}
+
+export async function removePhotoFB(id: string): Promise<void> {
+  const docRef = doc(db, 'site', 'data');
+  const snap = await getDoc(docRef);
+  if (snap.exists()) {
+    const data = snap.data() as SiteDataFirebase;
+    await updateDoc(docRef, { photos: (data.photos || []).filter(p => p.id !== id) });
   }
 }
 

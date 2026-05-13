@@ -16,6 +16,7 @@ import Perspectives from "@/components/sections/Perspectives";
 import Contact from "@/components/sections/Contact";
 import AdminToolbar from "@/components/AdminToolbar";
 import Gallery3D from "@/components/Gallery3D";
+import ProfessionalGallery from "@/components/ProfessionalGallery";
 import { GlobalEditableProvider } from "@/components/EditableText";
 import { initFirebaseSync } from "@/store/useStore";
 
@@ -39,6 +40,7 @@ export default function Home() {
         <Partners />
         <Governance />
         <Perspectives />
+        <ProfessionalGallery />
         <Contact />
         <Gallery3D />
       </main>

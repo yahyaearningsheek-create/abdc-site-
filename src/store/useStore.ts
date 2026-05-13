@@ -3,7 +3,7 @@ import { persist } from 'zustand/middleware';
 import {
   onSiteDataChange, initSiteData, updateCustomText,
   addMemberFB, removeMemberFB, addPresidentFB, removePresidentFB,
-  addGalleryImage, removeGalleryImage, updatePassword, getPassword,
+  addGalleryImage, removeGalleryImage, addPhotoFB, removePhotoFB, updatePassword, getPassword,
   type SiteDataFirebase
 } from '@/lib/firebaseService';
 
@@ -23,13 +23,21 @@ export interface President {
   isCurrent?: boolean;
 }
 
+export interface Photo {
+  id: string;
+  src: string;
+  title: string;
+  category: string;
+}
+
 interface SiteData {
   heroTitle: { fr: string; en: string; ar: string };
   heroSubtitle: { fr: string; en: string; ar: string };
   members: Member[];
   presidents: President[];
   customTexts: Record<string, string>;
-  galleryImages: string[];
+  galleryImages: string[]; // Still keep this for the document pages
+  photos: Photo[]; // New field for professional photos
 }
 
 interface AppState {
@@ -49,6 +57,8 @@ interface AppState {
   removePresident: (id: string) => void;
   addGalleryImg: (base64: string) => void;
   removeGalleryImg: (url: string) => void;
+  addPhoto: (photo: Photo) => void;
+  removePhoto: (id: string) => void;
 }
 
 const rawMembers = [
@@ -139,6 +149,7 @@ const initialSiteData: SiteData = {
   presidents: initialPresidents,
   customTexts: {},
   galleryImages: [],
+  photos: [],
 };
 
 export const useStore = create<AppState>()(
@@ -229,9 +240,31 @@ export const useStore = create<AppState>()(
         }));
         removeGalleryImage(url).catch(console.error);
       },
+      addPhoto: (photo) => {
+        set((state) => ({
+          siteData: {
+            ...state.siteData,
+            photos: [...(state.siteData.photos || []), photo],
+          },
+        }));
+        addPhotoFB(photo).catch(console.error);
+      },
+      removePhoto: (id) => {
+        set((state) => ({
+          siteData: {
+            ...state.siteData,
+            photos: (state.siteData.photos || []).filter((p) => p.id !== id),
+          },
+        }));
+        removePhotoFB(id).catch(console.error);
+      },
     }),
     {
       name: 'abdc-storage',
+      partialize: (state) => ({
+        language: state.language,
+        isAdminMode: state.isAdminMode,
+      }),
     }
   )
 );
@@ -261,6 +294,7 @@ export function initFirebaseSync() {
         presidents: data.presidents || state.siteData.presidents,
         customTexts: data.customTexts || state.siteData.customTexts,
         galleryImages: data.galleryImages || [],
+        photos: data.photos || [],
       },
     }));
   });
