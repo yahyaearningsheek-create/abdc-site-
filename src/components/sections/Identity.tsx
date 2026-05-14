@@ -76,7 +76,7 @@ const Identity = () => {
           <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={() => setShowMembers(true)}
             className="btn bg-primary text-white shadow-lg hover:shadow-xl hover:bg-primary-dark flex items-center gap-3">
             <Users className="w-6 h-6" />
-            <span className="font-semibold text-lg">Voir les Membres ({siteData.members.length})</span>
+            <span className="font-semibold text-lg">Voir les Membres ({(siteData?.members || []).length})</span>
           </motion.button>
           <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={() => setShowPresidents(true)}
             className="btn bg-secondary text-white shadow-lg hover:shadow-xl hover:bg-secondary-dark flex items-center gap-3">
@@ -96,7 +96,7 @@ const Identity = () => {
                 onClick={(e) => e.stopPropagation()}>
                 <div className="p-4 border-b dark:border-gray-800 flex justify-between items-center bg-gray-50 dark:bg-gray-900/50">
                   <h3 className="text-xl font-bold text-primary flex items-center gap-2">
-                    <Users className="w-5 h-5" /> Membres ({siteData.members.length})
+                    <Users className="w-5 h-5" /> Membres ({(siteData?.members || []).length})
                   </h3>
                   <button onClick={() => setShowMembers(false)} className="p-2 hover:bg-gray-200 dark:hover:bg-gray-800 rounded-full">
                     <X className="w-5 h-5" />
@@ -104,7 +104,7 @@ const Identity = () => {
                 </div>
                 <div className="p-4 overflow-y-auto">
                   <div className="space-y-2">
-                    {siteData.members.map((member, i) => (
+                    {(siteData?.members || []).map((member, i) => (
                       <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.01 }}
                         key={member.id}
                         className="flex items-center gap-3 p-2.5 rounded-xl bg-gray-50 dark:bg-gray-800/50 border border-gray-100 dark:border-gray-800 hover:border-primary/30 transition-colors">
@@ -143,7 +143,7 @@ const Identity = () => {
                 </div>
                 <div className="p-4 overflow-y-auto">
                   <div className="relative border-l-2 border-secondary/30 ml-4 space-y-6 pb-4">
-                    {siteData.presidents.map((president, i) => (
+                    {(siteData?.presidents || []).map((president, i) => (
                       <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.1 }}
                         key={president.id} className="relative pl-6">
                         <div className={`absolute -left-[9px] top-2 w-4 h-4 rounded-full border-2 border-white ${president.isCurrent ? 'bg-accent scale-125' : 'bg-secondary'}`} />

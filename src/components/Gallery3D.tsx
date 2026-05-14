@@ -17,7 +17,7 @@ const Gallery3D = () => {
   const [fullscreen, setFullscreen] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const firebaseImages = (siteData.galleryImages || []).map((src, i) => ({
+  const firebaseImages = (siteData?.galleryImages || []).map((src, i) => ({
     src,
     label: `Image ajoutée ${i + 1}`,
   }));

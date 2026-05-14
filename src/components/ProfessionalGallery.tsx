@@ -22,7 +22,7 @@ const ProfessionalGallery = () => {
   const [newPhotoCategory, setNewPhotoCategory] = useState("Activités");
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const photos = siteData.photos || [];
+  const photos = siteData?.photos || [];
 
   const filteredPhotos = useMemo(() => {
     if (selectedCategory === "Tout") return photos;
