@@ -12,20 +12,22 @@ const showToast = (msg: string) => {
 
 interface EditableTextProps {
   id: string;
-  defaultValue: string;
+  defaultValue?: string;
+  children?: string;
   tag?: "span" | "p" | "h1" | "h2" | "h3" | "h4" | "div";
   className?: string;
   multiline?: boolean;
 }
 
-const EditableText = ({ id, defaultValue, tag: Tag = "span", className = "", multiline = false }: EditableTextProps) => {
+const EditableText = ({ id, defaultValue, children, tag: Tag = "span", className = "", multiline = false }: EditableTextProps) => {
+  const finalDefaultValue = defaultValue || children || "";
   const { isAdminMode, siteData, setCustomText, language } = useStore();
   
   // Use a language-specific key to avoid cross-language overwrites
   const storageKey = id.includes(language) ? id : `${id}-${language}`;
   
   const customTexts = siteData?.customTexts || {};
-  const displayValue = customTexts[storageKey] !== undefined ? customTexts[storageKey] : defaultValue;
+  const displayValue = customTexts[storageKey] !== undefined ? customTexts[storageKey] : finalDefaultValue;
   
   const [isEditing, setIsEditing] = useState(false);
   const [tempValue, setTempValue] = useState(displayValue);
