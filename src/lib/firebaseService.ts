@@ -1,7 +1,7 @@
 import { db } from './firebase';
 import {
   doc, getDoc, setDoc, updateDoc,
-  onSnapshot, FieldPath
+  onSnapshot, FieldPath, arrayUnion, arrayRemove
 } from 'firebase/firestore';
 
 const SITE_DOC = 'site/data';
@@ -67,11 +67,9 @@ export async function updateCustomText(key: string, value: string): Promise<void
 // ============ MEMBERS ============
 export async function addMemberFB(member: FirebaseMember): Promise<void> {
   const docRef = doc(db, 'site', 'data');
-  const snap = await getDoc(docRef);
-  if (snap.exists()) {
-    const data = snap.data() as SiteDataFirebase;
-    await updateDoc(docRef, { members: [...data.members, member] });
-  }
+  await updateDoc(docRef, { 
+    members: arrayUnion(member) 
+  });
 }
 
 export async function removeMemberFB(id: string): Promise<void> {
@@ -79,18 +77,21 @@ export async function removeMemberFB(id: string): Promise<void> {
   const snap = await getDoc(docRef);
   if (snap.exists()) {
     const data = snap.data() as SiteDataFirebase;
-    await updateDoc(docRef, { members: data.members.filter(m => m.id !== id) });
+    const memberToRemove = data.members.find(m => m.id === id);
+    if (memberToRemove) {
+      await updateDoc(docRef, { 
+        members: arrayRemove(memberToRemove) 
+      });
+    }
   }
 }
 
 // ============ PRESIDENTS ============
 export async function addPresidentFB(president: FirebasePresident): Promise<void> {
   const docRef = doc(db, 'site', 'data');
-  const snap = await getDoc(docRef);
-  if (snap.exists()) {
-    const data = snap.data() as SiteDataFirebase;
-    await updateDoc(docRef, { presidents: [...data.presidents, president] });
-  }
+  await updateDoc(docRef, { 
+    presidents: arrayUnion(president) 
+  });
 }
 
 export async function removePresidentFB(id: string): Promise<void> {
@@ -98,39 +99,36 @@ export async function removePresidentFB(id: string): Promise<void> {
   const snap = await getDoc(docRef);
   if (snap.exists()) {
     const data = snap.data() as SiteDataFirebase;
-    await updateDoc(docRef, { presidents: data.presidents.filter(p => p.id !== id) });
+    const presToRemove = data.presidents.find(p => p.id === id);
+    if (presToRemove) {
+      await updateDoc(docRef, { 
+        presidents: arrayRemove(presToRemove) 
+      });
+    }
   }
 }
 
 // ============ GALLERY (base64 dans Firestore) ============
 export async function addGalleryImage(base64: string): Promise<void> {
   const docRef = doc(db, 'site', 'data');
-  const snap = await getDoc(docRef);
-  if (snap.exists()) {
-    const data = snap.data() as SiteDataFirebase;
-    const images = data.galleryImages || [];
-    await updateDoc(docRef, { galleryImages: [...images, base64] });
-  }
+  await updateDoc(docRef, { 
+    galleryImages: arrayUnion(base64) 
+  });
 }
 
 export async function removeGalleryImage(base64: string): Promise<void> {
   const docRef = doc(db, 'site', 'data');
-  const snap = await getDoc(docRef);
-  if (snap.exists()) {
-    const data = snap.data() as SiteDataFirebase;
-    await updateDoc(docRef, { galleryImages: (data.galleryImages || []).filter(img => img !== base64) });
-  }
+  await updateDoc(docRef, { 
+    galleryImages: arrayRemove(base64) 
+  });
 }
 
 // ============ PHOTOS (Organized) ============
 export async function addPhotoFB(photo: { id: string; src: string; title: string; category: string }): Promise<void> {
   const docRef = doc(db, 'site', 'data');
-  const snap = await getDoc(docRef);
-  if (snap.exists()) {
-    const data = snap.data() as SiteDataFirebase;
-    const photos = data.photos || [];
-    await updateDoc(docRef, { photos: [...photos, photo] });
-  }
+  await updateDoc(docRef, { 
+    photos: arrayUnion(photo) 
+  });
 }
 
 export async function removePhotoFB(id: string): Promise<void> {
@@ -138,7 +136,12 @@ export async function removePhotoFB(id: string): Promise<void> {
   const snap = await getDoc(docRef);
   if (snap.exists()) {
     const data = snap.data() as SiteDataFirebase;
-    await updateDoc(docRef, { photos: (data.photos || []).filter(p => p.id !== id) });
+    const photoToRemove = (data.photos || []).find(p => p.id === id);
+    if (photoToRemove) {
+      await updateDoc(docRef, { 
+        photos: arrayRemove(photoToRemove) 
+      });
+    }
   }
 }
 
