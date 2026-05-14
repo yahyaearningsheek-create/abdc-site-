@@ -290,25 +290,22 @@ export function initFirebaseSync() {
   
   initSiteData(defaultFirebaseData).catch(console.error);
 
-  const unsubscribe = onSnapshot(docRef, (snap) => {
-    if (snap.exists()) {
-      const data = snap.data() as SiteDataFirebase;
-      const storeState = useStore.getState();
-      
-      useStore.setState({
-        firebaseReady: true,
-        siteData: {
-          ...storeState.siteData,
-          heroTitle: { ...initialSiteData.heroTitle, ...data.heroTitle },
-          heroSubtitle: { ...initialSiteData.heroSubtitle, ...data.heroSubtitle },
-          members: Array.isArray(data.members) ? data.members : storeState.siteData.members,
-          presidents: Array.isArray(data.presidents) ? data.presidents : storeState.siteData.presidents,
-          customTexts: data.customTexts || {},
-          galleryImages: Array.isArray(data.galleryImages) ? data.galleryImages : [],
-          photos: Array.isArray(data.photos) ? data.photos : [],
-        },
-      });
-    }
+  const unsubscribe = onSiteDataChange((data) => {
+    const storeState = useStore.getState();
+    
+    useStore.setState({
+      firebaseReady: true,
+      siteData: {
+        ...storeState.siteData,
+        heroTitle: { ...initialSiteData.heroTitle, ...data.heroTitle },
+        heroSubtitle: { ...initialSiteData.heroSubtitle, ...data.heroSubtitle },
+        members: Array.isArray(data.members) ? data.members : storeState.siteData.members,
+        presidents: Array.isArray(data.presidents) ? data.presidents : storeState.siteData.presidents,
+        customTexts: data.customTexts || {},
+        galleryImages: Array.isArray(data.galleryImages) ? data.galleryImages : [],
+        photos: Array.isArray(data.photos) ? data.photos : [],
+      },
+    });
   });
 
   return unsubscribe;
