@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Shield, LogOut, Eye, EyeOff, Lock, X, Key, Users, Award, Plus, Trash2, Upload } from "lucide-react";
 import { useStore } from "@/store/useStore";
@@ -14,6 +14,18 @@ const AdminToolbar = () => {
   const [password, setPassword] = useState("");
   const [showPwd, setShowPwd] = useState(false);
   const [error, setError] = useState("");
+
+  // Toast from EditableText global edits
+  const [toastMsg, setToastMsg] = useState("");
+
+  useEffect(() => {
+    const handler = (e: Event) => {
+      setToastMsg((e as CustomEvent).detail);
+      setTimeout(() => setToastMsg(""), 3000);
+    };
+    window.addEventListener("abdc-toast", handler);
+    return () => window.removeEventListener("abdc-toast", handler);
+  }, []);
 
   // Panel state
   const [showPanel, setShowPanel] = useState(false);
@@ -123,14 +135,15 @@ const AdminToolbar = () => {
     <>
       {/* Success toast */}
       <AnimatePresence>
-        {successMsg && (
+        {(successMsg || toastMsg) && (
           <motion.div
             initial={{ opacity: 0, y: -50 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -50 }}
-            className="fixed top-4 left-1/2 -translate-x-1/2 z-[200] bg-green-500 text-white px-6 py-3 rounded-full shadow-lg font-medium text-sm"
+            className="fixed top-4 left-1/2 -translate-x-1/2 z-[200] bg-green-500 text-white px-6 py-3 rounded-full shadow-lg font-medium text-sm flex items-center gap-2"
           >
-            ✓ {successMsg}
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7" /></svg>
+            {successMsg || toastMsg}
           </motion.div>
         )}
       </AnimatePresence>

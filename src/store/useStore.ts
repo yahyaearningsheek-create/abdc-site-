@@ -268,6 +268,9 @@ export const useStore = create<AppState>()(
       partialize: (state) => ({
         language: state.language,
         isAdminMode: state.isAdminMode,
+        siteData: {
+          customTexts: state.siteData.customTexts,
+        },
       }),
     }
   )

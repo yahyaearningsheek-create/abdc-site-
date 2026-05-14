@@ -5,6 +5,11 @@ import { useStore } from "@/store/useStore";
 import { Pencil, Check, Loader2, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
+const showToast = (msg: string) => {
+  const event = new CustomEvent("abdc-toast", { detail: msg });
+  window.dispatchEvent(event);
+};
+
 interface EditableTextProps {
   id: string;
   defaultValue: string;
@@ -49,7 +54,7 @@ const EditableText = ({ id, defaultValue, tag: Tag = "span", className = "", mul
     try {
       await setCustomText(storageKey, tempValue);
       setIsSaved(true);
-      // Wait a bit to show success state
+      showToast("Modification enregistrée");
       setTimeout(() => {
         setIsEditing(false);
         setIsSaved(false);
@@ -232,6 +237,7 @@ export function GlobalEditableProvider({ children }: { children: React.ReactNode
       if (val && val !== currentText) {
         target.textContent = val;
         await setCustomText(key, val);
+        showToast("Modification enregistrée");
       }
     };
 
