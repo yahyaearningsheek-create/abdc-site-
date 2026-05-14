@@ -229,9 +229,9 @@ const AdminToolbar = () => {
                         <Plus className="w-4 h-4" />
                       </button>
                     </form>
-                    <p className="text-xs text-gray-500">{siteData.members.length} membres</p>
+                    <p className="text-xs text-gray-500">{(siteData?.members || []).length} membres</p>
                     <div className="space-y-1 max-h-[40vh] overflow-y-auto">
-                      {siteData.members.map((m) => (
+                      {(siteData?.members || []).map((m) => (
                         <div key={m.id} className="flex items-center justify-between py-2 px-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800/50 text-sm">
                           <div>
                             <span className="font-medium text-text dark:text-white">{m.name}</span>
@@ -279,7 +279,7 @@ const AdminToolbar = () => {
                       </div>
                     </form>
                     <div className="space-y-2">
-                       {siteData.presidents.map((p) => (
+                       {(siteData?.presidents || []).map((p) => (
                         <div key={p.id} className={`flex items-center justify-between p-3 rounded-lg border text-sm ${p.isCurrent ? 'border-accent bg-accent/5' : 'border-gray-100 dark:border-gray-800'}`}>
                           <div className="flex items-center gap-3">
                             <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-white shadow-sm flex-shrink-0 bg-gray-100 dark:bg-gray-700 flex items-center justify-center">

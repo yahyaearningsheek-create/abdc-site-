@@ -268,9 +268,6 @@ export const useStore = create<AppState>()(
       partialize: (state) => ({
         language: state.language,
         isAdminMode: state.isAdminMode,
-        siteData: {
-          customTexts: state.siteData.customTexts,
-        },
       }),
     }
   )
@@ -293,21 +290,25 @@ export function initFirebaseSync() {
   
   initSiteData(defaultFirebaseData).catch(console.error);
 
-  const unsubscribe = onSiteDataChange((data) => {
-    // Only update if not currently editing to avoid jumping cursor or overwriting local edits
-    useStore.setState((state) => ({
-      firebaseReady: true,
-      siteData: {
-        ...state.siteData,
-        heroTitle: data.heroTitle || state.siteData.heroTitle,
-        heroSubtitle: data.heroSubtitle || state.siteData.heroSubtitle,
-        members: data.members || state.siteData.members,
-        presidents: data.presidents || state.siteData.presidents,
-        customTexts: data.customTexts || state.siteData.customTexts,
-        galleryImages: data.galleryImages || [],
-        photos: data.photos || [],
-      },
-    }));
+  const unsubscribe = onSnapshot(docRef, (snap) => {
+    if (snap.exists()) {
+      const data = snap.data() as SiteDataFirebase;
+      const storeState = useStore.getState();
+      
+      useStore.setState({
+        firebaseReady: true,
+        siteData: {
+          ...storeState.siteData,
+          heroTitle: { ...initialSiteData.heroTitle, ...data.heroTitle },
+          heroSubtitle: { ...initialSiteData.heroSubtitle, ...data.heroSubtitle },
+          members: Array.isArray(data.members) ? data.members : storeState.siteData.members,
+          presidents: Array.isArray(data.presidents) ? data.presidents : storeState.siteData.presidents,
+          customTexts: data.customTexts || {},
+          galleryImages: Array.isArray(data.galleryImages) ? data.galleryImages : [],
+          photos: Array.isArray(data.photos) ? data.photos : [],
+        },
+      });
+    }
   });
 
   return unsubscribe;

@@ -79,7 +79,7 @@ const Hero = () => {
             className="inline-flex items-center gap-2 bg-white/15 backdrop-blur-md px-5 py-2.5 rounded-full border border-white/20 shadow-lg mb-8 text-white font-medium text-sm"
           >
             <Users className="w-4 h-4" />
-            {siteData.members.length} membres actifs depuis 2011
+            {(siteData?.members || []).length} membres actifs depuis 2011
           </motion.div>
 
           {/* Main Title */}
@@ -90,7 +90,7 @@ const Hero = () => {
             className="text-4xl md:text-6xl font-extrabold text-white leading-tight mb-6 drop-shadow-lg"
           >
             <EditableText id={`hero-title-${language}`}>
-              {siteData.heroTitle[language]}
+              {siteData?.heroTitle?.[language] || ""}
             </EditableText>
           </motion.h1>
 
@@ -102,7 +102,7 @@ const Hero = () => {
             className="text-xl md:text-2xl text-white/90 font-semibold mb-6"
           >
             <EditableText id={`hero-subtitle-${language}`}>
-              {siteData.heroSubtitle[language]}
+              {siteData?.heroSubtitle?.[language] || ""}
             </EditableText>
           </motion.h2>
 
