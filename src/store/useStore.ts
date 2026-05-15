@@ -293,27 +293,19 @@ export function initFirebaseSync() {
   const unsubscribe = onSiteDataChange((data) => {
     const storeState = useStore.getState();
     
-      // Helper to merge lists by ID
-      const mergeById = (initial: any[], remote: any[] = []) => {
-        const map = new Map();
-        initial.forEach(item => map.set(item.id, item));
-        remote.forEach(item => map.set(item.id, item));
-        return Array.from(map.values());
-      };
-
-      useStore.setState({
-        firebaseReady: true,
-        siteData: {
-          ...storeState.siteData,
-          heroTitle: { ...initialSiteData.heroTitle, ...data.heroTitle },
-          heroSubtitle: { ...initialSiteData.heroSubtitle, ...data.heroSubtitle },
-          members: mergeById(initialSiteData.members, data.members),
-          presidents: mergeById(initialSiteData.presidents, data.presidents),
-          customTexts: data.customTexts || {},
-          galleryImages: Array.isArray(data.galleryImages) ? data.galleryImages : [],
-          photos: Array.isArray(data.photos) ? data.photos : [],
-        },
-      });
+    useStore.setState({
+      firebaseReady: true,
+      siteData: {
+        ...storeState.siteData,
+        heroTitle: { ...initialSiteData.heroTitle, ...data.heroTitle },
+        heroSubtitle: { ...initialSiteData.heroSubtitle, ...data.heroSubtitle },
+        members: Array.isArray(data.members) ? data.members : storeState.siteData.members,
+        presidents: Array.isArray(data.presidents) ? data.presidents : storeState.siteData.presidents,
+        customTexts: data.customTexts || {},
+        galleryImages: Array.isArray(data.galleryImages) ? data.galleryImages : [],
+        photos: Array.isArray(data.photos) ? data.photos : [],
+      },
+    });
   });
 
   return unsubscribe;
